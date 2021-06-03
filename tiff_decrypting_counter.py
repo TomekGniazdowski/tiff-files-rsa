@@ -55,7 +55,7 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
 
 
         print('e:', self.e, 'n:', self.n, 'd:', self.d, 'dlugosc m:', self.len_of_m)
-        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)))
         # all stripes, divided, int, encrypted
 
         # dividing
@@ -67,7 +67,7 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
         # RSA
         self.inputlist_enc = [0] * len(self.inputlist)
         self.rsa_encrypt()
-        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)))
         self.divide_to_chunks(chunk_len=self.len_of_m)
         self.list_xored = [0] * len(self.inputlist)
         self.generate_xor()
@@ -76,8 +76,8 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
         img_out = np.array(img_encrypted)
         img_out = convert_list_hex_int(img_out)
         img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 1018 * 1016 - len(img_out)), 'constant')
-        img_out = img_out.reshape(1018, 1016)
+        # img_out = np.pad(img_out, (0, 1018 * 1016 - len(img_out)), 'constant')
+        img_out = img_out.reshape(1016, 1016)
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_odkodowany_counter.tif', img_out, photometric='minisblack')
 
@@ -142,8 +142,9 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
 
     # divides a stream of bytes into a list of substreams
     def divide_to_chunks(self, chunk_len):
-        self.data_hex_list_div = [self.all_strips[i:i + chunk_len] for i in range(0, len(self.all_strips), chunk_len)]
-        for idx, chunk in enumerate(self.data_hex_list_div):
+        self.data_hex_list_div = ['0'] * (int((len(self.all_strips) / self.len_of_m)))
+        self.data_hex_list_div_foo = [self.all_strips[i:i + chunk_len] for i in range(0, len(self.all_strips), chunk_len)]
+        for idx, chunk in enumerate(self.data_hex_list_div_foo):
             self.data_hex_list_div[idx] = return_sum_enc(chunk)
         # print('podzielony:', self.data_hex_list_div)
         for idx, chunk in enumerate(self.data_hex_list_div):
@@ -185,7 +186,7 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
                                          range(len(self.data_hex_list_conn_enc_1) * (self.len_of_m) )]
         kdx = 0
         for idx, chunk in enumerate(self.data_hex_list_conn_enc_1):
-            if len(chunk) < self.len_of_m * 2 and idx != (len(self.data_hex_list_conn_enc_1) - 1):
+            if len(chunk) < self.len_of_m * 2:
                 first_zeros = '0' * (self.len_of_m * 2 - len(chunk))
                 chunk = first_zeros + chunk
             if len(chunk) % 2 != 0:

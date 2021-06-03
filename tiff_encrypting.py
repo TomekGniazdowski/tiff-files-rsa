@@ -50,9 +50,9 @@ class TiffEncrypting(tm.Tiff_manipulations):
         self.len_of_m = -1
         self.generate_keys()
         print('e:', self.e, 'n:', self.n, 'd:', self.d, 'dlugosc m:', self.len_of_m)
-        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)))
         # all stripes, divided, int, encrypted
-        self.data_hex_list_div_int_enc = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int_enc = [0] * (int((len(self.all_strips) / self.len_of_m)))
         # dividing
         self.divide_to_chunks(chunk_len=self.len_of_m)
         # RSA
@@ -60,9 +60,9 @@ class TiffEncrypting(tm.Tiff_manipulations):
         img_encrypted = self.connect_chunks_encrypted()
         img_out = np.array(img_encrypted)
         img_out = convert_list_hex_int(img_out)
-        # img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 1020 * (8 * (self.len_of_m + 1)) - len(img_out)), 'constant')
-        img_out = img_out.reshape(1020, (8 * (self.len_of_m + 1)))
+        img_out = np.array(img_out)
+        # img_out = np.pad(img_out, (0, 1020 * (8 * (self.len_of_m + 1)) - len(img_out)), 'constant')
+        img_out = img_out.reshape(1016, (8 * (self.len_of_m + 1)))
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_zakodowany.tif', img_out, photometric='minisblack')
 
@@ -164,10 +164,10 @@ class TiffEncrypting(tm.Tiff_manipulations):
             self.data_hex_list_conn_enc_1[idx] = hex(chunk).replace('0x', '')
         # print('zakodowany, hex:', self.data_hex_list_conn_enc_1)
 
-        self.data_hex_list_conn_enc_2 = ['0' for x in range(len(self.data_hex_list_conn_enc_1) * (self.len_of_m) + 10**4)]
+        self.data_hex_list_conn_enc_2 = ['0' for x in range(len(self.data_hex_list_conn_enc_1) * (self.len_of_m+1) )]
         kdx = 0
         for idx, chunk in enumerate(self.data_hex_list_conn_enc_1):
-            if len(chunk) < self.len_of_m * 2 + 2 and idx != (len(self.data_hex_list_conn_enc_1) - 1):
+            if len(chunk) < self.len_of_m * 2 + 2:
                 first_zeros = '0' * (self.len_of_m * 2 + 2 - len(chunk))
                 chunk = first_zeros + chunk
             if len(chunk) % 2 != 0:
@@ -179,4 +179,3 @@ class TiffEncrypting(tm.Tiff_manipulations):
                     kdx += 1
         # print('zakodowany, podzielony na piksele, hex:', self.data_hex_list_conn_enc_2)
         return self.data_hex_list_conn_enc_2
-

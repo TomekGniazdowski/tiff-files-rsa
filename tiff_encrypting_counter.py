@@ -55,7 +55,7 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
 
 
         print('e:', self.e, 'n:', self.n, 'd:', self.d, 'dlugosc m:', self.len_of_m)
-        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)))
         # all stripes, divided, int, encrypted
 
         # dividing
@@ -66,7 +66,7 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
         # RSA
         self.inputlist_enc = [0] * len(self.inputlist)
         self.rsa_encrypt()
-        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)) + 1)
+        self.data_hex_list_div_int = [0] * (int((len(self.all_strips) / self.len_of_m)))
         self.divide_to_chunks(chunk_len=self.len_of_m)
         self.list_xored = [0] * len(self.inputlist)
         self.generate_xor()
@@ -75,8 +75,8 @@ class TiffEncrypting_counter(tm.Tiff_manipulations):
         img_out = np.array(img_encrypted)
         img_out = convert_list_hex_int(img_out)
         img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 1017 * 1016 - len(img_out)), 'constant')
-        img_out = img_out.reshape(1017, 1016)
+        # img_out = np.pad(img_out, (0, 1017 * 1016 - len(img_out)), 'constant')
+        img_out = img_out.reshape(1016, 1016)
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_zakodowany_counter.tif', img_out, photometric='minisblack')
 

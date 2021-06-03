@@ -45,8 +45,8 @@ class TiffDecrypting(tm.Tiff_manipulations):
         self.connect_chunks_decrypted()
         img_out = np.array(self.data_hex_list_conn_2)
         img_out = convert_list_hex_int(img_out)
-        # img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 1016 * 1016 - len(img_out)), 'constant')
+        img_out = np.array(img_out)
+        # img_out = np.pad(img_out, (0, 1016 * 1016 - len(img_out)), 'constant')
         img_out = img_out.reshape(1016, 1016)
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_ponownie_odkodowany.tif', img_out, photometric='minisblack')
@@ -104,7 +104,7 @@ class TiffDecrypting(tm.Tiff_manipulations):
 
     # rsa decrypt
     def rsa_decrypt(self):
-        self.data_hex_list_div_int_dec = [0] * (int((len(self.all_strips) / self.len_of_c)) + 1)
+        self.data_hex_list_div_int_dec = [0] * (int((len(self.all_strips) / self.len_of_c)))
         idx = 0
         for chunk in self.data_hex_list_div_int_enc:
             self.data_hex_list_div_int_dec[idx] = pow(chunk, self.d, self.n)
@@ -126,11 +126,11 @@ class TiffDecrypting(tm.Tiff_manipulations):
             self.data_hex_list_conn_1[idx] = hex(chunk).replace('0x', '')
         # print('odkodowany, hex:', self.data_hex_list_conn_1)
 
-        self.data_hex_list_conn_2 = ['0' for x in range(len(self.data_hex_list_conn_1) * (self.len_of_c - 2))]
+        self.data_hex_list_conn_2 = ['0' for x in range(len(self.data_hex_list_conn_1) * (self.len_of_c - 1))]
         kdx = 0
         for idx, chunk in enumerate(self.data_hex_list_conn_1):
             try:
-                if len(chunk) < self.len_of_c * 2 - 2 and idx != (len(self.data_hex_list_conn_1) - 1):
+                if len(chunk) < self.len_of_c * 2 - 2:
                     first_zeros = '0' * (self.len_of_c * 2 - 2 - len(chunk))
                     chunk = first_zeros + chunk
                 for jdx in range(0, len(chunk), 2):
@@ -143,4 +143,3 @@ class TiffDecrypting(tm.Tiff_manipulations):
             except:
                 break
         # print('odkodowany, podzielony na piksele, hex:', self.data_hex_list_conn_2)
-        
