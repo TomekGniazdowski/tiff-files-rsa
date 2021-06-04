@@ -155,6 +155,8 @@ class TiffEncrypting(tm.Tiff_manipulations):
         # make sure m is not longer than n
         bit_len_of_m = bit_len_of_n - 1
         self.len_of_m = bit_len_of_m // 8
+        self.p = p
+        self.q = q
 
     def connect_chunks_encrypted(self):
         # print(self.data_hex_list_div_int_enc)
