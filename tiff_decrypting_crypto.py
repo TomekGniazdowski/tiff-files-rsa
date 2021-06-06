@@ -45,14 +45,14 @@ class TiffDecryptingcrypto(tm.Tiff_manipulations):
         img_out = np.array(self.data_hex_list_conn_1)
         img_out = convert_list_hex_int(img_out)
         img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 1037 * 1016 - len(img_out)), 'constant')
-        img_out = img_out.reshape(1037, 1016)
+        img_out = np.pad(img_out, (0, 1017 * 1016 - len(img_out)), 'constant')
+        img_out = img_out.reshape(1017, 1016)
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_ponownie_odkodowany_crypto.tif', img_out, photometric='minisblack')
 
     def show_img(self, strips):
         kdx = 0
-        for i in range(1035):
+        for i in range(1017):
             for j in range(1016):
                 self.img[i][j] = strips[kdx]
                 kdx += 1
