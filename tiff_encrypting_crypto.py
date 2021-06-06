@@ -30,7 +30,7 @@ def convert_list_int_hex(list):
 
 
 class TiffEncryptingcrypto(tm.Tiff_manipulations):
-    def __init__(self, file_name, n, e, d, p, q, len_of_m):
+    def __init__(self, file_name, n, e, d, p, q):
         super().__init__(file_name)
         self.read_data()
         # self.list_data()
@@ -60,8 +60,8 @@ class TiffEncryptingcrypto(tm.Tiff_manipulations):
         # img_encrypted = self.connect_chunks_encrypted()
         img_out = np.array(self.data_hex_list_conn_enc_1)
         img_out = np.array(img_out)
-        img_out = np.pad(img_out, (0, 2120 * 2120 - len(img_out)), 'constant')
-        img_out = img_out.reshape(2120, 2120)
+        # img_out = np.pad(img_out, (0, 2110 * 2100 - len(img_out)), 'constant')
+        img_out = img_out.reshape(2432, 1811)
         img_out = img_out.astype(np.uint8)
         imwrite('obraz_zakodowany_crypto.tif', img_out, photometric='minisblack')
 
